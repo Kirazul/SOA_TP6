@@ -1,0 +1,104 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# schema.gql — Schéma GraphQL complet
+# Ressources : User et Device (relation de composition)
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── Énumérations ──────────────────────────────────────────────────────────────
+
+"""Type de device."""
+enum DeviceType {
+  laptop
+  smartphone
+  tablet
+  server
+}
+
+"""Statut opérationnel d'un device."""
+enum DeviceStatus {
+  active
+  inactive
+  maintenance
+}
+
+# ── Types ─────────────────────────────────────────────────────────────────────
+
+"""Représente un utilisateur de l'application."""
+type User {
+  id: String!
+  name: String!
+  email: String!
+  password: String!
+  """Devices appartenant à cet utilisateur (composition)."""
+  devices: [Device!]!
+}
+
+"""
+Représente un équipement informatique appartenant à un utilisateur.
+Un device ne peut pas exister sans son utilisateur parent (composition).
+"""
+type Device {
+  id: String!
+  userId: String!
+  name: String!
+  type: DeviceType!
+  serialNumber: String!
+  status: DeviceStatus!
+}
+
+# ── Queries ───────────────────────────────────────────────────────────────────
+
+type Query {
+  """Récupère un utilisateur par son identifiant."""
+  user(id: String!): User
+
+  """Récupère la liste de tous les utilisateurs."""
+  users: [User!]!
+
+  """Récupère un device par son identifiant."""
+  device(id: String!): Device
+
+  """Récupère tous les devices, avec filtrage optionnel par userId."""
+  devices(userId: String): [Device!]!
+
+  """Récupère tous les devices d'un utilisateur donné."""
+  devicesByUser(userId: String!): [Device!]!
+}
+
+# ── Mutations ─────────────────────────────────────────────────────────────────
+
+type Mutation {
+  # ── Users ──────────────────────────────────────────────────────────────────
+
+  """Crée un nouvel utilisateur."""
+  addUser(name: String!, email: String!, password: String!): User
+
+  """Met à jour un utilisateur existant."""
+  updateUser(id: String!, name: String!, email: String!, password: String!): User
+
+  """Supprime un utilisateur et tous ses devices (cascade)."""
+  deleteUser(id: String!): Boolean!
+
+  # ── Devices ────────────────────────────────────────────────────────────────
+
+  """Crée un nouveau device pour un utilisateur existant."""
+  addDevice(
+    userId: String!
+    name: String!
+    type: DeviceType!
+    serialNumber: String!
+    status: DeviceStatus!
+  ): Device
+
+  """Met à jour un device existant."""
+  updateDevice(
+    id: String!
+    userId: String!
+    name: String!
+    type: DeviceType!
+    serialNumber: String!
+    status: DeviceStatus!
+  ): Device
+
+  """Supprime un device."""
+  deleteDevice(id: String!): Boolean!
+}
