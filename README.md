@@ -1,9 +1,6 @@
 # TP6 — API REST / GraphQL avec RxDB
 
-> **Matière :** Architecture Orientée Service  
-> **Enseignant :** Salah Gontara  
-> **Classe :** 4Info  
-> **A.U. :** 2025/2026
+
 
 ---
 
